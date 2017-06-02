@@ -11,7 +11,7 @@ var saveDelId;
 
 getHives();
 $('#status').on( 'click', newStatus );
-$('#delBtn').on( 'click', confirmAndDelete);
+$('#beeHives').on('click','.delete',confirmAndDelete);
 
 function getHives( evt ) {
   getAllHives();
@@ -33,36 +33,33 @@ function loadHives( response ) {
   
 function showHives () {
     var tr, td, beeHive, editBtn, deleteBtn;
-    var i, len, button;
+    var i, len, button, oneHive;
     $('#beeHives').empty();
     //getHives();
     //hives.forEach( function (beeHive) {
     for (i = 0, len = hives.length; i<len; ++i) {
-        tr = $( '<tr>' );
-        td = $( '<td>' );
+        oneHive = hives[i];
       
-        var delId = hives[i]._id;
-        saveDelId = delId;
-        console.log(delId);
-        
-        td.text( hives[i]._id );
-        tr.append( td );
-        td.text( hives[i].name );
-        tr.append( td );
+        tr = $( '<tr> data-id="' + oneHive._id + '">' );
+        console.log('id='+oneHive._id);
         td = $( '<td>' );
-
-        td.text( hives[i].age );
+        td.text( oneHive.name );
         tr.append( td );
+      
         td = $( '<td>' );
-        td.text( hives[i].notes );
+        td.text(oneHive.age );
+        tr.append( td );
+      
+        td = $( '<td>' );
+        td.text(oneHive.notes );
         tr.append( td );  
       
         td = $( '<td>' );
-        button = $( '<button type="button">' );
+        button = $( '<button type="button" class="edit">' );
         button.text( 'Edit' );
         td.append( button );
-        //button.on( 'click', callEdit );
-        button = $( '<button type="button" id="delBtn">' );
+
+        button = $( '<button type="button" class="delete">' );
         button.text( 'Delete' );
         td.append( button );
         tr.append( td );
@@ -74,10 +71,19 @@ function showHives () {
     $('#addStatus').hide();
 }
   
+ function idOfEventHive( evt ) {
+    var btn = evt.target;
+    var tr = $(btn).closest( 'tr' );
+    var id = tr.attr( 'data-id' );
+    console.log('idofevent='+id);
+    return id;
+} 
+  
 function confirmAndDelete( evt ){
-            //var delId = $('#')
-            deleteHive( hive[i]._id );
-            getHives();      
+  var delId = idOfEventHive(evt);
+  console.log('in confirmAndDelete id='+delId);
+  deleteHive(delId);
+  getHives();      
 }
 
 function deleteHive(delId) {
